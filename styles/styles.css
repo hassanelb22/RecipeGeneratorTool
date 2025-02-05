@@ -1,0 +1,203 @@
+/* Generate page style.css */
+#generatedRecipe {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  header img {
+    object-fit: cover;
+  }
+  
+  #commentsSection > div {
+    background-color: #f4f4f4;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .comments-section {
+    margin-top: 30px;
+  }
+  
+  .comment {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .comment:last-child {
+    border-bottom: none;
+  }
+  
+  #alert {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  #alert.opacity-100 {
+    opacity: 1;
+  }
+
+  .hidden {
+    display: none;
+  }
+  
+  #saveAlert,
+  #copyAlert {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  }
+  
+  #saveAlert.opacity-100,
+  #copyAlert.opacity-100 {
+    opacity: 1;
+  }
+  
+/* History page style.css */
+
+
+
+/* Custom CSS for smooth transitions and animations */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+}
+
+header.scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+header img {
+  object-fit: cover;
+}
+
+.accordion-button {
+  transition: background-color 0.3s ease;
+}
+
+.accordion-button:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+.accordion-panel {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.accordion-panel.open {
+  max-height: 500px; /* Adjust based on content */
+  opacity: 1;
+}
+
+.download-button {
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.download-button:hover {
+  transform: translateY(-2px);
+  background-color: #4f46e5;
+}
+
+.delete-button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #ef4444;
+  transform: translateY(-2px);
+}
+
+.delete-icon {
+  transition: color 0.3s ease;
+}
+
+.delete-icon:hover {
+  color: #ef4444;
+}
+/* Accordion Item Styling */
+.accordion-item {
+border: 1px solid #e5e7eb; /* Light gray border */
+border-radius: 0.5rem;
+overflow: hidden;
+margin-bottom: 1rem; /* Space between accordion items */
+}
+
+/* Accordion Header Styling */
+.accordion-header {
+background-color: #f9fafb; /* Light gray background */
+padding: 1rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid #e5e7eb; /* Separator line */
+cursor: pointer;
+}
+
+.accordion-title {
+font-size: 1.25rem; /* Larger font size for the title */
+font-weight: bold;
+color: #111827; /* Dark text color */
+}
+
+/* Delete Button Styling */
+.delete-icon {
+color: #dc2626; /* Red delete icon */
+transition: color 0.3s ease;
+}
+.delete-icon:hover {
+color: #ef4444; /* Brighter red on hover */
+}
+
+/* Accordion Panel Styling */
+.accordion-panel {
+transition: max-height 0.3s ease, opacity 0.3s ease;
+max-height: 0;
+opacity: 0;
+overflow: hidden;
+padding: 0 1rem; /* Padding for content inside the panel */
+}
+
+.accordion-panel.open {
+max-height: 500px; /* Adjust based on content */
+opacity: 1;
+overflow-y: auto; /* Enables vertical scrolling when open */
+padding: 1rem; /* Add padding when open */
+}
+
+/* Recipe Content Styling */
+.recipe-content {
+font-size: 1rem; /* Standard font size for recipe content */
+line-height: 1.6; /* Improved readability with line height */
+color: #4b5563; /* Grayish text color */
+}
+
+/* Recipe Subtitle Styling */
+.recipe-subtitle {
+font-size: 1.125rem; /* Slightly larger font size for subtitle */
+font-weight: bold; /* Bold font weight */
+margin-bottom: 0.5rem; /* Space below the subtitle */
+color: #111827; /* Dark text color */
+}
+
+/* Responsive Design Adjustments */
+@media (max-width: 768px) {
+.recipe-subtitle {
+font-size: 1rem; /* Smaller subtitle on smaller screens */
+}
+
+.recipe-content {
+font-size: 0.9rem; /* Smaller font size for content on smaller screens */
+}
+}
+
