@@ -136,7 +136,7 @@ document.getElementById("recipeForm").addEventListener("submit", async function 
     Include the following sections:
     - A catchy recipe name with emoji.
     - Ingredients list.
-    - Step-by-step directions.
+    - Directions.
     - Nutritional information (prep time, cooking time, total time, servings, and approximate calories per serving).
   `;
 
