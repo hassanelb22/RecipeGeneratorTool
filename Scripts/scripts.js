@@ -359,7 +359,7 @@ function renderRecipes() {
             ${recipe.prompts ? `
               <div class="prompts-section mt-4">
                 <h3 class="text-lg font-semibold">Prompts</h3>
-                <pre class="bg-gray-100 p-4 rounded">${JSON.stringify(recipe.prompts, null, 2)}</pre>
+                <pre class="text-gray-200 dark:bg-gray-800 p-4 rounded-lg overflow-auto whitespace-pre-wrap">${JSON.stringify(recipe.prompts, null, 2)}</pre>
               </div>
             ` : ''}
           </div>
