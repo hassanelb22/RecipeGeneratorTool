@@ -140,7 +140,6 @@ window.onload = function () {
       Generate a detailed recipe for "${recipeName}" in ${language}. 
       Include the following sections:
       - A catchy title with decorations.
-      - A brief description of the dish.
       - Ingredients list (with subcategories if applicable).
       - Step-by-step directions.
       - Nutritional information (prep time, cooking time, total time, servings, and approximate calories per serving).
@@ -164,16 +163,35 @@ window.onload = function () {
       const data = await response.json();
       let generatedText = data.candidates[0]?.content.parts[0]?.text || "No recipe generated.";
       generatedText = generatedText.replace(/\*\*/g, "");
-
-    // Remove or replace the '#' symbol
-    generatedText = generatedText.replace(/#/g, ""); // Removes all '#' symbols
-    // OR
-    generatedText = generatedText.replace(/# /g, ""); // Removes '# ' (hash followed by a space)
-
+  
+      // Remove or replace the '#' symbol
+      generatedText = generatedText.replace(/#/g, ""); // Removes all '#' symbols
+      // OR
+      generatedText = generatedText.replace(/# /g, ""); // Removes '# ' (hash followed by a space)
+  
       const outputDiv = document.getElementById("output");
       const generatedRecipePre = document.getElementById("generatedRecipe");
       generatedRecipePre.innerHTML = generatedText;
       outputDiv.classList.remove("hidden");
+  
+      // Generate prompts
+      const ahmadBatPrompt = `amateur photo from reddit. taken with an iphone 15 pro. A geographic picture of Close-up of a ${recipeName} JUICY mouthwatering and delicious dish on a (Dish Color) plate, holding by a women's hand. Behind the ${recipeName}, the (Background bhal: City, Beach, swimming pool ...) slightly out of focus. The sky is clear blue. In the midground, there's a grassy area with people lounging. The recipe is clearly visible. The image has a playful, touristy vibe, combining the iconic. The lighting is bright and sunny, giving the scene a cheerful atmosphere.`;
+      const anouarSaidiPrompt = `Capture the essence of This Light and refreshing, ${recipeName}. Make our readers crave a bite just by looking at your photo. We want to see it in all its mouthwatering glory, ready to inspire cooks and bakers alike. Get creative with your composition, lighting, and styling Make it look Realistic, camera: iphone, V6`;
+      const ahmadJdayPromptV1 = `${recipeName} Amateur photo from Reddit, taken with a Galaxy S2. | Amateur lighting | SHOT TYPE: Focus on the details`;
+      const ahmadJdayPromptV2 = `${recipeName} front angle shot, low angle shot, kitchen background, We want to see it in all its mouthwatering glory, ready to inspire cooks and bakers alike. Get creative with your composition, lighting, and styling Make it look Realistic --s 250`;
+  
+      // Display prompts
+      document.getElementById("ahmadBatPrompt").textContent = ahmadBatPrompt;
+      document.getElementById("anouarSaidiPrompt").textContent = anouarSaidiPrompt;
+      document.getElementById("ahmadJdayPromptV1").textContent = ahmadJdayPromptV1;
+      document.getElementById("ahmadJdayPromptV2").textContent = ahmadJdayPromptV2;
+      document.getElementById("promptsSection").classList.remove("hidden");
+  
+      // Show success alert
+      document.getElementById("alert").classList.remove("hidden");
+      setTimeout(() => {
+        document.getElementById("alert").classList.add("hidden");
+      }, 3000);
     } catch (error) {
       alert("An error occurred while generating the recipe.");
       console.error("Error:", error);
@@ -272,104 +290,105 @@ function onRecipeGenerated() {
   // History page script.js
 
 
+// Toggle Mobile Menu
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById('mobileMenu');
+  mobileMenu.classList.toggle('hidden');
+}
 
-  // Toggle Mobile Menu
-  function toggleMobileMenu() {
-    const mobileMenu = document.getElementById('mobileMenu');
-    mobileMenu.classList.toggle('hidden');
-  }
-  
-  // Accordion functionality
-  function togglePanel(index) {
-    const panel = document.getElementById(`panel-${index}`);
-    panel.classList.toggle('open');
-  }
-  
-  // Delete a recipe
-  function deleteRecipe(index) {
-    let savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
-    savedRecipes.splice(index, 1); // Remove the recipe at the specified index
-    localStorage.setItem("recipes", JSON.stringify(savedRecipes)); // Update localStorage
-    renderRecipes(); // Re-render the recipe list
-  }
-  
-  // Render saved recipes
-  function renderRecipes() {
+// Accordion functionality
+function togglePanel(index) {
+  const panel = document.getElementById(`panel-${index}`);
+  panel.classList.toggle('open');
+}
+
+// Delete a recipe
+function deleteRecipe(index) {
+  let savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  savedRecipes.splice(index, 1); // Remove the recipe at the specified index
+  localStorage.setItem("recipes", JSON.stringify(savedRecipes)); // Update localStorage
+  renderRecipes(); // Re-render the recipe list
+}
+
+// Render saved recipes
+function renderRecipes() {
   let savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
   let recipeList = document.getElementById("recipeList");
-  let languageFilter = document.getElementById("languageFilter").value;
   
+  // Ensure the language filter defaults to "all" if no value is set
+  let languageFilter = document.getElementById("languageFilter").value || "all";
+  console.log("Language Filter:", languageFilter); // Debugging line
+
   if (savedRecipes.length === 0) {
-  recipeList.innerHTML = "<p class='text-center text-gray-500'>No saved recipes yet.</p>";
-  return;
+    recipeList.innerHTML = "<p class='text-center text-gray-500'>No saved recipes yet.</p>";
+    return;
   }
-  
+
   recipeList.innerHTML = ""; // Clear the list before re-rendering
-  
+
   savedRecipes.forEach((recipe, index) => {
-  if (languageFilter === "all" || recipe.language === languageFilter) {
-    let accordionItem = document.createElement("div");
-    accordionItem.classList.add("accordion-item");
-  
-    accordionItem.innerHTML = `
-      <div class="accordion-header" onclick="togglePanel(${index})">
-        <span class="accordion-title">${recipe.name}</span>
-        <button onclick="deleteRecipe(${index})" class="delete-icon">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-          </svg>
-        </button>
-      </div>
-      <div id="panel-${index}" class="accordion-panel">
-        <div class="recipe-content">
-          <p>${recipe.content}</p>
+    if (languageFilter === "all" || recipe.language === languageFilter) {
+      let accordionItem = document.createElement("div");
+      accordionItem.classList.add("accordion-item");
+
+      accordionItem.innerHTML = `
+        <div class="accordion-header" onclick="togglePanel(${index})">
+          <span class="accordion-title">${recipe.name}</span>
+          <button onclick="deleteRecipe(${index})" class="delete-icon">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </button>
         </div>
-      </div>
-    `;
-  
-    recipeList.appendChild(accordionItem);
-  }
+        <div id="panel-${index}" class="accordion-panel">
+          <div class="recipe-content">
+            <p>${recipe.content}</p>
+          </div>
+        </div>
+      `;
+
+      recipeList.appendChild(accordionItem);
+    }
   });
-  }
-  // Load saved recipes on page load
-  document.addEventListener("DOMContentLoaded", () => {
-    renderRecipes();
-  });
-  
-  // Download CSV functionality
-  function downloadCSV() {
+}
+
+// Load saved recipes on page load
+document.addEventListener("DOMContentLoaded", () => {
+  // Set the language filter to "all" by default
+  document.getElementById("languageFilter").value = "all";
+  // Render recipes
+  renderRecipes();
+});
+
+// Download CSV functionality
+function downloadCSV() {
   let savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
   if (savedRecipes.length === 0) {
-  alert("No recipes to download.");
-  return;
+    alert("No recipes to download.");
+    return;
   }
-  
+
   let csvContent = "recipe_name,generated_recipe,language\n";
   savedRecipes.forEach(({ name, content, language }) => {
-  csvContent += `"${name}","${content.replace(/"/g, '""')}","${language}"\n`;
+    csvContent += `"${name}","${content.replace(/"/g, '""')}","${language}"\n`;
   });
-  
+
   let blob = new Blob([csvContent], { type: "text/csv" });
   let link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = "recipes.csv";
   link.click();
+}
+
+// Add scroll effect to header
+window.addEventListener("scroll", () => {
+  const header = document.querySelector("header");
+  if (window.scrollY > 50) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
   }
-  
-  // Add scroll effect to header
-  window.addEventListener("scroll", () => {
-    const header = document.querySelector("header");
-    if (window.scrollY > 50) {
-      header.classList.add("scrolled");
-    } else {
-      header.classList.remove("scrolled");
-    }
-  });
-  
-  document.addEventListener("DOMContentLoaded", () => {
-  renderRecipes();
-  });
-  
+});
 
     // Index page script.js
 
@@ -378,3 +397,8 @@ function toggleMobileMenu() {
   const mobileMenu = document.getElementById('mobileMenu');
   mobileMenu.classList.toggle('hidden');
 }
+
+
+
+
+
