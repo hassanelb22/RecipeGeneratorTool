@@ -1,328 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Generator</title>
-
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center bg-[url('https://pagedone.io/asset/uploads/1691055810.png')] bg-center bg-cover">
-
-  <!-- Save Alert Notification -->
-<div id="saveAlert" class="hidden fixed bottom-5 left-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500">
-  Recipe saved successfully!
-</div>
-
-
-  <!-- Generate Alert Notification -->
-  <div id="alert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500">
-    Recipe generated successfully!
-  </div>
-
-    <!-- Copy Alert Notification -->
-  <div id="copyAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500">
-    Recipe copied successfully!
-  </div>
-  
-
-  <!-- Header Section -->
-  <header class="w-full bg-white shadow-md">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <!-- Logo -->
-      <a href="index.html" class="flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat w-8 h-8 text-indigo-600">
-        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path>
-        <line x1="6" x2="18" y1="17" y2="17"></line>
-      </svg>
-      <span class="text-xl ml-4 font-bold text-indigo-700">Recipe Generator</span>
-    </a>
-
-      <!-- Navigation Links -->
-      <nav class="hidden md:flex space-x-6">
-        <a href="history.html" target="_blank" class="text-gray-700 hover:text-indigo-600">Saved Recipes</a>
-      </nav>
-
-      <!-- Mobile Menu Button -->
-      <button class="md:hidden text-gray-700 focus:outline-none" onclick="toggleMobileMenu()">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="md:hidden hidden px-6 py-4">
-      <a href="history.html" target="_blank" class="block text-gray-700 hover:text-indigo-600 mb-2">Saved Recipes</a>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="flex-grow w-full flex flex-col items-center pt-10">
-    <!-- Form Section -->
-    <form id="recipeForm" class="w-full md:w-[60%] bg-white p-6 rounded-lg shadow-lg mb-10">
-      <!-- API Key Input -->
-      <div class="mb-4 relative">
-        <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-1">Google GEMINI API Key<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="ml-2 text-orange-500 hover:text-orange-600 text-xs">Get your API key here →</a></label>
-        <input 
-          type="password" 
-          id="apiKey" 
-          name="apiKey" 
-          placeholder="Your Gemini API Key" 
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
-        >
-        <button 
-          type="button" 
-          class="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full" 
-          onclick="toggleApiKeyVisibility()"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke-width="1.5" 
-            stroke="currentColor" 
-            class="w-5 h-5 text-gray-400 hover:text-indigo-500 transition duration-200"
-            id="eyeIcon"
-          >
-            <path 
-              stroke-linecap="round" 
-              stroke-linejoin="round" 
-              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-            />
-            <path 
-              stroke-linecap="round" 
-              stroke-linejoin="round" 
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-        </button>
-      </div>
-      
-      <div class="mb-4">
-        <label for="recipeName" class="block text-sm font-medium text-gray-700 mb-1">Enter Recipe Name:</label>
-        <input 
-          type="text" 
-          id="recipeName" 
-          name="recipeName" 
-          required 
-          placeholder="e.g., Cranberry Feta Pinwheels" 
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-      </div>
-      
-      <div class="mb-4">
-        <label for="language" class="block text-sm font-medium text-gray-700 mb-1">Select Language:</label>
-        <select 
-          id="language" 
-          name="language" 
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-        </select>
-      </div>
-
-      <!-- Submit Button -->
-      <button 
-        type="submit" 
-        class="w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700 transition duration-200"
-      >
-        Generate Recipe
-      </button>
-    </form>
-    
-
-    <!-- Output Section -->
-    
-    <div id="output" class="w-full md:w-[60%] bg-white p-6 rounded-lg shadow-lg hidden">
-      <!-- Facebook Post Header -->
-      <div class="flex items-center mb-4">
-        <!-- Profile Image -->
-        <img 
-          src="images/profile.png" 
-          alt="Profile Picture" 
-          class="w-10 h-10 rounded-full mr-4"
-        >
-        <!-- Page Name and Badge -->
-        <div>
-          <div class="flex items-center">
-            <span class="text-lg font-semibold text-gray-800">Delicious Recipes</span>
-            <svg viewBox="0 0 12 13" width="12" height="12" fill="#007bff" title="Verified account" style="margin-left: 4px;">
-              <title>Verified account</title>
-              <g fill-rule="evenodd" transform="translate(-98 -917)">
-                  <path d="m106.853 922.354-3.5 3.5a.499.499 0 0 1-.706 0l-1.5-1.5a.5.5 0 1 1 .706-.708l1.147 1.147 3.147-3.147a.5.5 0 1 1 .706.708m3.078 2.295-.589-1.149.588-1.15a.633.633 0 0 0-.219-.82l-1.085-.7-.065-1.287a.627.627 0 0 0-.6-.603l-1.29-.066-.703-1.087a.636.636 0 0 0-.82-.217l-1.148.588-1.15-.588a.631.631 0 0 0-.82.22l-.701 1.085-1.289.065a.626.626 0 0 0-.6.6l-.066 1.29-1.088.702a.634.634 0 0 0-.216.82l.588 1.149-.588 1.15a.632.632 0 0 0 .219.819l1.085.701.065 1.286c.014.33.274.59.6.604l1.29.065.703 1.088c.177.27.53.362.82.216l1.148-.588 1.15.589a.629.629 0 0 0 .82-.22l.701-1.085 1.286-.064a.627.627 0 0 0 .604-.601l.065-1.29 1.088-.703a.633.633 0 0 0 .216-.819"></path>
-              </g>
-          </svg>
-          </div>
-          <span class="text-sm text-gray-500">Just Now</span>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Recipe Generator</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="styles/styles.css" />
+    </head>
+    <body class="bg-gray-100 min-h-screen flex flex-col items-center bg-[url('https://pagedone.io/asset/uploads/1691055810.png')] bg-center bg-cover">
+        <!-- Save Alert Notification -->
+        <div id="saveAlert" class="hidden fixed bottom-5 left-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500">
+            Recipe saved successfully!
         </div>
-      </div>
 
-      <!-- Recipe Content -->
-      <div class="relative">
-        <pre id="generatedRecipe" class="text-gray-700 leading-relaxed whitespace-pre-wrap p-4 bg-gray-50 rounded-lg mb-4"></pre>
-        
-      </div>
+        <!-- Generate Alert Notification -->
+        <div id="alert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500">
+            Recipe generated successfully!
+        </div>
 
-      <!-- Social Actions -->
-      <div class="flex items-center space-x-4 mb-4">
-        <!-- Save recipe Button -->
-        <button 
-           
-          class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 transition duration-200"
-          onclick="saveRecipe()"
-        >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-        </svg>
-        
-          <span id="Saverecipe"></span> Save recipe
-        </button>
+        <!-- Copy Alert Notification -->
+        <div id="copyAlert" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-500">
+            Recipe copied successfully!
+        </div>
 
-        <!-- Comment Button -->
-        <button 
-          id="CopyRecipe" 
-          class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 transition duration-200"
-          onclick="copyRecipe()"
-        >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-        </svg>
-        
-          <span>Copy Recipe</span>
-        </button>
+        <!-- Header Section -->
+        <header class="w-full bg-white shadow-md">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-chef-hat w-8 h-8 text-indigo-600"
+                    >
+                        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path>
+                        <line x1="6" x2="18" y1="17" y2="17"></line>
+                    </svg>
+                    <span class="text-xl ml-4 font-bold text-indigo-700">Recipe Generator</span>
+                </a>
 
-        <!-- Share Button -->
-        <button 
-          id="shareButton" 
-          class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 transition duration-200"
-          onclick="sharePost()"
-        >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-        </svg>
-        
-          <span>Share</span>
-        </button>
-      </div>
-      
-      <!-- Comments Section -->
-      
-               <section class="mt-8">
-                <h3 class="text-xl font-semibold mb-4">Comments</h3>
-                <div id="comments" class="space-y-6">
-                    <!-- Comment 1 -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                                <img src="images/img1.png" alt="User Avatar" class="w-10 h-10 rounded-full">
-                                <span class="font-medium text-gray-800">John Doe</span>
-                            </div>
-                            <span class="text-sm text-gray-500">30 minutes ago</span>
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="history.html" target="_blank" class="text-gray-700 hover:text-indigo-600">Saved Recipes</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700 focus:outline-none" onclick="toggleMobileMenu()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden hidden px-6 py-4">
+                <a href="history.html" target="_blank" class="block text-gray-700 hover:text-indigo-600 mb-2">Saved Recipes</a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-grow w-full flex flex-col items-center pt-10">
+            <!-- Form Section -->
+            <form id="recipeForm" class="w-full md:w-[60%] bg-white p-6 rounded-lg shadow-lg mb-10">
+                <!-- API Key Input -->
+                <div class="mb-4 relative">
+                    <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-1">
+                        Google GEMINI API Key<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="ml-2 text-orange-500 hover:text-orange-600 text-xs">Get your API key here →</a>
+                    </label>
+                    <input type="password" id="apiKey" name="apiKey" placeholder="Your Gemini API Key" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10" />
+                    <button type="button" class="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full" onclick="toggleApiKeyVisibility()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 hover:text-indigo-500 transition duration-200" id="eyeIcon">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                            />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Recipe Name Input -->
+                <div class="mb-4">
+                    <label for="recipeName" class="block text-sm font-medium text-gray-700 mb-1">Enter Recipe Name:</label>
+                    <input
+                        type="text"
+                        id="recipeName"
+                        name="recipeName"
+                        required
+                        placeholder="e.g., Cranberry Feta Pinwheels"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
+
+                <!-- Language Selector -->
+                <div class="mb-4">
+                    <label for="language" class="block text-sm font-medium text-gray-700 mb-1">Select Language:</label>
+                    <select id="language" name="language" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700 transition duration-200">
+                    Generate Recipe
+                </button>
+            </form>
+
+            <!-- Output Section -->
+            <div id="output" class="w-full md:w-[60%] bg-white p-6 rounded-lg shadow-lg hidden">
+                <!-- Facebook Post Header -->
+                <div class="flex items-center mb-4">
+                    <!-- Profile Image -->
+                    <img src="images/profile.png" alt="Profile Picture" class="w-10 h-10 rounded-full mr-4" />
+                    <!-- Page Name and Badge -->
+                    <div>
+                        <div class="flex items-center">
+                            <span class="text-lg font-semibold text-gray-800">Delicious Recipes</span>
+                            <svg viewBox="0 0 12 13" width="12" height="12" fill="#007bff" title="Verified account" style="margin-left: 4px;">
+                                <title>Verified account</title>
+                                <g fill-rule="evenodd" transform="translate(-98 -917)">
+                                    <path
+                                        d="m106.853 922.354-3.5 3.5a.499.499 0 0 1-.706 0l-1.5-1.5a.5.5 0 1 1 .706-.708l1.147 1.147 3.147-3.147a.5.5 0 1 1 .706.708m3.078 2.295-.589-1.149.588-1.15a.633.633 0 0 0-.219-.82l-1.085-.7-.065-1.287a.627.627 0 0 0-.6-.603l-1.29-.066-.703-1.087a.636.636 0 0 0-.82-.217l-1.148.588-1.15-.588a.631.631 0 0 0-.82.22l-.701 1.085-1.289.065a.626.626 0 0 0-.6.6l-.066 1.29-1.088.702a.634.634 0 0 0-.216.82l.588 1.149-.588 1.15a.632.632 0 0 0 .219.819l1.085.701.065 1.286c.014.33.274.59.6.604l1.29.065.703 1.088c.177.27.53.362.82.216l1.148-.588 1.15.589a.629.629 0 0 0 .82-.22l.701-1.085 1.286-.064a.627.627 0 0 0 .604-.601l.065-1.29 1.088-.703a.633.633 0 0 0 .216-.819"
+                                    ></path>
+                                </g>
+                            </svg>
                         </div>
-                        <p class="mt-2 text-gray-700">This recipe looks amazing! Can't wait to try it!</p>
-                        <div class="flex items-center mt-2 space-x-4">
-                            <button class="text-sm text-indigo-600 hover:underline">Like (12)</button>
-                            <input type="text" placeholder="Reply..." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-600">
-                        </div>
+                        <span class="text-sm text-gray-500">Just Now</span>
                     </div>
-    
-                    <!-- Comment 2 -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                                <img src="images/img2.png" alt="User Avatar" class="w-10 h-10 rounded-full">
-                                <span class="font-medium text-gray-800">Jane Smith</span>
-                            </div>
-                            <span class="text-sm text-gray-500">1 hour ago</span>
+                </div>
+
+                <!-- Recipe Content -->
+                <div class="relative">
+                    <pre id="generatedRecipe" class="text-gray-700 leading-relaxed whitespace-pre-wrap p-4 bg-gray-50 rounded-lg mb-4"></pre>
+                </div>
+
+                <!-- Prompts Section -->
+                <div id="promptsSection" class="mt-6 hidden">
+                    <h3 class="text-xl font-semibold mb-4">MIDJOURNEY PROMPTS</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-medium text-gray-800">Ahmad Bat Prompt:</h4>
+                            <pre id="ahmadBatPrompt" class="text-gray-700 bg-gray-100 p-4 rounded-lg overflow-auto whitespace-pre-wrap"></pre>
                         </div>
-                        <p class="mt-2 text-gray-700">The instructions are so clear and easy to follow. Thanks for this!</p>
-                        <div class="flex items-center mt-2 space-x-4">
-                            <button class="text-sm text-indigo-600 hover:underline">Like (8)</button>
-                            <input type="text" placeholder="Reply..." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-600">
+                        <div>
+                            <h4 class="font-medium text-gray-800">Anouar Saidi Prompt:</h4>
+                            <pre id="anouarSaidiPrompt" class="text-gray-700 bg-gray-100 p-4 rounded-lg overflow-auto whitespace-pre-wrap"></pre>
                         </div>
-                    </div>
-    
-                    <!-- Comment 3 -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                                <img src="images/img3.png" alt="User Avatar" class="w-10 h-10 rounded-full">
-                                <span class="font-medium text-gray-800">Michael Brown</span>
-                            </div>
-                            <span class="text-sm text-gray-500">2 hours ago</span>
+                        <div>
+                            <h4 class="font-medium text-gray-800">Ahmad Jday Prompt V1:</h4>
+                            <pre id="ahmadJdayPromptV1" class="text-gray-700 bg-gray-100 p-4 rounded-lg overflow-auto whitespace-pre-wrap"></pre>
                         </div>
-                        <p class="mt-2 text-gray-700">I made this last night, and it was a hit at my dinner party. Highly recommend!</p>
-                        <div class="flex items-center mt-2 space-x-4">
-                            <button class="text-sm text-indigo-600 hover:underline">Like (15)</button>
-                            <input type="text" placeholder="Reply..." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-600">
+                        <div>
+                            <h4 class="font-medium text-gray-800">Ahmad Jday Prompt V2:</h4>
+                            <pre id="ahmadJdayPromptV2" class="text-gray-700 bg-gray-100 p-4 rounded-lg overflow-auto whitespace-pre-wrap"></pre>
                         </div>
                     </div>
                 </div>
-            </section>
-      </div>
-    </div>
-  </div>
 
+                <!-- Social Actions -->
+                <div class="flex items-center space-x-4 mb-4 mt-8">
+                    <!-- Save recipe Button -->
+                    <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 transition duration-200" onclick="saveRecipe()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
 
-<!--Footer section-->
-<footer class="w-full mt-20 bg-gray-900">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!--Grid-->
-      <div class="py-16 flex justify-between items-center flex-col gap-8 lg:flex-row">
-        <a href="#" class="flex justify-center ">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat w-8 h-8 text-indigo-300"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path><line x1="6" x2="18" y1="17" y2="17"></line>
-    </svg>
-<span class="text-xl ml-4 font-bold text-indigo-200">Recipe Generator</span>
-              
-      </a>
-          <ul class="text-lg text-center sm:flex items-cente justify-center gap-14 lg:gap-10 xl:gap-14 transition-all duration-500">
-            <li ><a href=""  class="text-white hover:text-gray-400">About</a></li>
-            <li class="sm:my-0 my-2" ><a href=""  class="text-white hover:text-gray-400">Privacy</a></li>
-            <li ><a href=""  class="text-white hover:text-gray-400">Support</a></li>
-          </ul>
-          <div class="flex  space-x-4 sm:justify-center  ">
-              <a href="javascript:;"  class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path id="Vector" d="M11.3214 8.93666L16.4919 3.05566H15.2667L10.7772 8.16205L7.1914 3.05566H3.05566L8.47803 10.7774L3.05566 16.9446H4.28097L9.022 11.552L12.8088 16.9446H16.9446L11.3211 8.93666H11.3214ZM9.64322 10.8455L9.09382 10.0765L4.72246 3.95821H6.60445L10.1322 8.8959L10.6816 9.66481L15.2672 16.083H13.3852L9.64322 10.8458V10.8455Z" fill="white"/>
-                  </svg>
-                      
-              </a>
-              <a href="javascript:;"  class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
-                  <svg class="w-[1.25rem] h-[1.125rem] text-white" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4.70975 7.93663C4.70975 6.65824 5.76102 5.62163 7.0582 5.62163C8.35537 5.62163 9.40721 6.65824 9.40721 7.93663C9.40721 9.21502 8.35537 10.2516 7.0582 10.2516C5.76102 10.2516 4.70975 9.21502 4.70975 7.93663ZM3.43991 7.93663C3.43991 9.90608 5.05982 11.5025 7.0582 11.5025C9.05658 11.5025 10.6765 9.90608 10.6765 7.93663C10.6765 5.96719 9.05658 4.37074 7.0582 4.37074C5.05982 4.37074 3.43991 5.96719 3.43991 7.93663ZM9.97414 4.22935C9.97408 4.39417 10.0236 4.55531 10.1165 4.69239C10.2093 4.82946 10.3413 4.93633 10.4958 4.99946C10.6503 5.06259 10.8203 5.07916 10.9844 5.04707C11.1484 5.01498 11.2991 4.93568 11.4174 4.81918C11.5357 4.70268 11.6163 4.55423 11.649 4.39259C11.6817 4.23095 11.665 4.06339 11.6011 3.91109C11.5371 3.7588 11.4288 3.6286 11.2898 3.53698C11.1508 3.44536 10.9873 3.39642 10.8201 3.39635H10.8197C10.5955 3.39646 10.3806 3.48424 10.222 3.64043C10.0635 3.79661 9.97434 4.00843 9.97414 4.22935ZM4.21142 13.5892C3.52442 13.5584 3.15101 13.4456 2.90286 13.3504C2.57387 13.2241 2.33914 13.0738 2.09235 12.8309C1.84555 12.588 1.69278 12.3569 1.56527 12.0327C1.46854 11.7882 1.3541 11.4201 1.32287 10.7431C1.28871 10.0111 1.28189 9.79119 1.28189 7.93669C1.28189 6.08219 1.28927 5.86291 1.32287 5.1303C1.35416 4.45324 1.46944 4.08585 1.56527 3.84069C1.69335 3.51647 1.84589 3.28513 2.09235 3.04191C2.3388 2.79869 2.57331 2.64813 2.90286 2.52247C3.1509 2.42713 3.52442 2.31435 4.21142 2.28358C4.95417 2.24991 5.17729 2.24319 7.0582 2.24319C8.9391 2.24319 9.16244 2.25047 9.90582 2.28358C10.5928 2.31441 10.9656 2.42802 11.2144 2.52247C11.5434 2.64813 11.7781 2.79902 12.0249 3.04191C12.2717 3.2848 12.4239 3.51647 12.552 3.84069C12.6487 4.08513 12.7631 4.45324 12.7944 5.1303C12.8285 5.86291 12.8354 6.08219 12.8354 7.93669C12.8354 9.79119 12.8285 10.0105 12.7944 10.7431C12.7631 11.4201 12.6481 11.7881 12.552 12.0327C12.4239 12.3569 12.2714 12.5882 12.0249 12.8309C11.7784 13.0736 11.5434 13.2241 11.2144 13.3504C10.9663 13.4457 10.5928 13.5585 9.90582 13.5892C9.16306 13.6229 8.93994 13.6296 7.0582 13.6296C5.17645 13.6296 4.95395 13.6229 4.21142 13.5892ZM4.15307 1.03424C3.40294 1.06791 2.89035 1.18513 2.4427 1.3568C1.9791 1.53408 1.58663 1.77191 1.19446 2.1578C0.802277 2.54369 0.56157 2.93108 0.381687 3.38797C0.207498 3.82941 0.0885535 4.3343 0.0543922 5.07358C0.0196672 5.81402 0.0117188 6.05074 0.0117188 7.93663C0.0117188 9.82252 0.0196672 10.0592 0.0543922 10.7997C0.0885535 11.539 0.207498 12.0439 0.381687 12.4853C0.56157 12.9419 0.802334 13.3297 1.19446 13.7155C1.58658 14.1012 1.9791 14.3387 2.4427 14.5165C2.89119 14.6881 3.40294 14.8054 4.15307 14.839C4.90479 14.8727 5.1446 14.8811 7.0582 14.8811C8.9718 14.8811 9.212 14.8732 9.96332 14.839C10.7135 14.8054 11.2258 14.6881 11.6737 14.5165C12.137 14.3387 12.5298 14.1014 12.9219 13.7155C13.3141 13.3296 13.5543 12.9419 13.7347 12.4853C13.9089 12.0439 14.0284 11.539 14.062 10.7997C14.0962 10.0587 14.1041 9.82252 14.1041 7.93663C14.1041 6.05074 14.0962 5.81402 14.062 5.07358C14.0278 4.33424 13.9089 3.82913 13.7347 3.38797C13.5543 2.93135 13.3135 2.5443 12.9219 2.1578C12.5304 1.7713 12.137 1.53408 11.6743 1.3568C11.2258 1.18513 10.7135 1.06735 9.96388 1.03424C9.21256 1.00058 8.97236 0.992188 7.05876 0.992188C5.14516 0.992188 4.90479 1.00002 4.15307 1.03424Z" fill="currentColor"/>
-                      </svg>
-                      
-              </a>
-              <a href="javascript:;"  class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
-                  <svg class="w-[1rem] h-[1rem] text-white" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.8794 11.5527V3.86835H0.318893V11.5527H2.87967H2.8794ZM1.59968 2.81936C2.4924 2.81936 3.04817 2.2293 3.04817 1.49188C3.03146 0.737661 2.4924 0.164062 1.61666 0.164062C0.74032 0.164062 0.167969 0.737661 0.167969 1.49181C0.167969 2.22923 0.723543 2.8193 1.5829 2.8193H1.59948L1.59968 2.81936ZM4.29668 11.5527H6.85698V7.26187C6.85698 7.03251 6.87369 6.80255 6.94134 6.63873C7.12635 6.17968 7.54764 5.70449 8.25514 5.70449C9.18141 5.70449 9.55217 6.4091 9.55217 7.44222V11.5527H12.1124V7.14672C12.1124 4.78652 10.8494 3.68819 9.16483 3.68819C7.78372 3.68819 7.17715 4.45822 6.84014 4.98267H6.85718V3.86862H4.29681C4.33023 4.5895 4.29661 11.553 4.29661 11.553L4.29668 11.5527Z" fill="currentColor"/>
-                      </svg>
-                      
-              </a>
-              <a href="javascript:;"  class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
-                  <svg class="w-[1.25rem] h-[0.875rem] text-white" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9346 1.13529C14.5684 1.30645 15.0665 1.80588 15.2349 2.43896C15.5413 3.58788 15.5413 5.98654 15.5413 5.98654C15.5413 5.98654 15.5413 8.3852 15.2349 9.53412C15.0642 10.1695 14.5661 10.669 13.9346 10.8378C12.7886 11.1449 8.19058 11.1449 8.19058 11.1449C8.19058 11.1449 3.59491 11.1449 2.44657 10.8378C1.81277 10.6666 1.31461 10.1672 1.14622 9.53412C0.839844 8.3852 0.839844 5.98654 0.839844 5.98654C0.839844 5.98654 0.839844 3.58788 1.14622 2.43896C1.31695 1.80353 1.81511 1.30411 2.44657 1.13529C3.59491 0.828125 8.19058 0.828125 8.19058 0.828125C8.19058 0.828125 12.7886 0.828125 13.9346 1.13529ZM10.541 5.98654L6.72178 8.19762V3.77545L10.541 5.98654Z" fill="currentColor"/>
-                      </svg>
-                      
-              </a>
-          </div>
-      </div>
-      <!--Grid-->
-      <div class="py-7 border-t border-gray-700">
-          <div class="flex items-center justify-center">
-              <span class="text-gray-400 ">© <a href="#">Recipe Generator </a> 2025 All rights reserved.</span>
-          </div>
-          <div class="flex items-center justify-center">
+                        <span id="Saverecipe"></span> Save recipe
+                    </button>
+
+                    <!-- Comment Button -->
+                    <button id="CopyRecipe" class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 transition duration-200" onclick="copyRecipe()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                            />
+                        </svg>
+
+                        <span>Copy Recipe</span>
+                    </button>
+
+                    <!-- Share Button -->
+                    <button id="shareButton" class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 transition duration-200" onclick="sharePost()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+                            />
+                        </svg>
+
+                        <span>Share</span>
+                    </button>
+                </div>
+
+                <!-- Comments Section -->
+                <!-- Comments Section -->
+                <section class="mt-8">
+                    <h3 class="text-xl font-semibold mb-4">Comments</h3>
+                    <div id="comments" class="space-y-6">
+                        <!-- Comment 1 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <img src="images/img1.png" alt="User Avatar" class="w-10 h-10 rounded-full" />
+                                    <span class="font-medium text-gray-800">John Doe</span>
+                                </div>
+                                <span class="text-sm text-gray-500">30 minutes ago</span>
+                            </div>
+                            <p class="mt-2 text-gray-700">This recipe looks amazing! Can't wait to try it!</p>
+                            <div class="flex items-center mt-2 space-x-4">
+                                <button class="text-sm text-indigo-600 hover:underline">Like (12)</button>
+                                <input type="text" placeholder="Reply..." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-600" />
+                            </div>
+                        </div>
+
+                        <!-- Comment 2 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <img src="images/img2.png" alt="User Avatar" class="w-10 h-10 rounded-full" />
+                                    <span class="font-medium text-gray-800">Jane Smith</span>
+                                </div>
+                                <span class="text-sm text-gray-500">1 hour ago</span>
+                            </div>
+                            <p class="mt-2 text-gray-700">The instructions are so clear and easy to follow. Thanks for this!</p>
+                            <div class="flex items-center mt-2 space-x-4">
+                                <button class="text-sm text-indigo-600 hover:underline">Like (8)</button>
+                                <input type="text" placeholder="Reply..." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-600" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!--<div id="commentsSection" class="mt-4 space-y-2">-->
+                <!--- Example Comment -->
+                <!--<div class="bg-gray-100 p-4 rounded-lg">
+          <p class="text-sm text-gray-700">This recipe looks amazing! Can't wait to try it!</p>
+          <span class="text-xs text-gray-500">- John Doe • 30 minutes ago</span>
+        </div>-->
+            </div>
         </div>
-      </div>
-  </div>
-</footer>
-<script src="Scripts/scripts.js"></script>
 
-</body>
+        <!--Footer section-->
+        <footer class="w-full mt-20 bg-gray-900">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!--Grid-->
+                <div class="py-16 flex justify-between items-center flex-col gap-8 lg:flex-row">
+                    <a href="#" class="flex justify-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-chef-hat w-8 h-8 text-indigo-300"
+                        >
+                            <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path>
+                            <line x1="6" x2="18" y1="17" y2="17"></line>
+                        </svg>
+                        <span class="text-xl ml-4 font-bold text-indigo-200">Recipe Generator</span>
+                    </a>
+                    <ul class="text-lg text-center sm:flex items-cente justify-center gap-14 lg:gap-10 xl:gap-14 transition-all duration-500">
+                        <li><a href="" class="text-white hover:text-gray-400">About</a></li>
+                        <li class="sm:my-0 my-2"><a href="" class="text-white hover:text-gray-400">Privacy</a></li>
+                        <li><a href="" class="text-white hover:text-gray-400">Support</a></li>
+                    </ul>
+                    <div class="flex space-x-4 sm:justify-center">
+                        <a href="javascript:;" class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path
+                                    id="Vector"
+                                    d="M11.3214 8.93666L16.4919 3.05566H15.2667L10.7772 8.16205L7.1914 3.05566H3.05566L8.47803 10.7774L3.05566 16.9446H4.28097L9.022 11.552L12.8088 16.9446H16.9446L11.3211 8.93666H11.3214ZM9.64322 10.8455L9.09382 10.0765L4.72246 3.95821H6.60445L10.1322 8.8959L10.6816 9.66481L15.2672 16.083H13.3852L9.64322 10.8458V10.8455Z"
+                                    fill="white"
+                                />
+                            </svg>
+                        </a>
+                        <a href="javascript:;" class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
+                            <svg class="w-[1.25rem] h-[1.125rem] text-white" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M4.70975 7.93663C4.70975 6.65824 5.76102 5.62163 7.0582 5.62163C8.35537 5.62163 9.40721 6.65824 9.40721 7.93663C9.40721 9.21502 8.35537 10.2516 7.0582 10.2516C5.76102 10.2516 4.70975 9.21502 4.70975 7.93663ZM3.43991 7.93663C3.43991 9.90608 5.05982 11.5025 7.0582 11.5025C9.05658 11.5025 10.6765 9.90608 10.6765 7.93663C10.6765 5.96719 9.05658 4.37074 7.0582 4.37074C5.05982 4.37074 3.43991 5.96719 3.43991 7.93663ZM9.97414 4.22935C9.97408 4.39417 10.0236 4.55531 10.1165 4.69239C10.2093 4.82946 10.3413 4.93633 10.4958 4.99946C10.6503 5.06259 10.8203 5.07916 10.9844 5.04707C11.1484 5.01498 11.2991 4.93568 11.4174 4.81918C11.5357 4.70268 11.6163 4.55423 11.649 4.39259C11.6817 4.23095 11.665 4.06339 11.6011 3.91109C11.5371 3.7588 11.4288 3.6286 11.2898 3.53698C11.1508 3.44536 10.9873 3.39642 10.8201 3.39635H10.8197C10.5955 3.39646 10.3806 3.48424 10.222 3.64043C10.0635 3.79661 9.97434 4.00843 9.97414 4.22935ZM4.21142 13.5892C3.52442 13.5584 3.15101 13.4456 2.90286 13.3504C2.57387 13.2241 2.33914 13.0738 2.09235 12.8309C1.84555 12.588 1.69278 12.3569 1.56527 12.0327C1.46854 11.7882 1.3541 11.4201 1.32287 10.7431C1.28871 10.0111 1.28189 9.79119 1.28189 7.93669C1.28189 6.08219 1.28927 5.86291 1.32287 5.1303C1.35416 4.45324 1.46944 4.08585 1.56527 3.84069C1.69335 3.51647 1.84589 3.28513 2.09235 3.04191C2.3388 2.79869 2.57331 2.64813 2.90286 2.52247C3.1509 2.42713 3.52442 2.31435 4.21142 2.28358C4.95417 2.24991 5.17729 2.24319 7.0582 2.24319C8.9391 2.24319 9.16244 2.25047 9.90582 2.28358C10.5928 2.31441 10.9656 2.42802 11.2144 2.52247C11.5434 2.64813 11.7781 2.79902 12.0249 3.04191C12.2717 3.2848 12.4239 3.51647 12.552 3.84069C12.6487 4.08513 12.7631 4.45324 12.7944 5.1303C12.8285 5.86291 12.8354 6.08219 12.8354 7.93669C12.8354 9.79119 12.8285 10.0105 12.7944 10.7431C12.7631 11.4201 12.6481 11.7881 12.552 12.0327C12.4239 12.3569 12.2714 12.5882 12.0249 12.8309C11.7784 13.0736 11.5434 13.2241 11.2144 13.3504C10.9663 13.4457 10.5928 13.5585 9.90582 13.5892C9.16306 13.6229 8.93994 13.6296 7.0582 13.6296C5.17645 13.6296 4.95395 13.6229 4.21142 13.5892ZM4.15307 1.03424C3.40294 1.06791 2.89035 1.18513 2.4427 1.3568C1.9791 1.53408 1.58663 1.77191 1.19446 2.1578C0.802277 2.54369 0.56157 2.93108 0.381687 3.38797C0.207498 3.82941 0.0885535 4.3343 0.0543922 5.07358C0.0196672 5.81402 0.0117188 6.05074 0.0117188 7.93663C0.0117188 9.82252 0.0196672 10.0592 0.0543922 10.7997C0.0885535 11.539 0.207498 12.0439 0.381687 12.4853C0.56157 12.9419 0.802334 13.3297 1.19446 13.7155C1.58658 14.1012 1.9791 14.3387 2.4427 14.5165C2.89119 14.6881 3.40294 14.8054 4.15307 14.839C4.90479 14.8727 5.1446 14.8811 7.0582 14.8811C8.9718 14.8811 9.212 14.8732 9.96332 14.839C10.7135 14.8054 11.2258 14.6881 11.6737 14.5165C12.137 14.3387 12.5298 14.1014 12.9219 13.7155C13.3141 13.3296 13.5543 12.9419 13.7347 12.4853C13.9089 12.0439 14.0284 11.539 14.062 10.7997C14.0962 10.0587 14.1041 9.82252 14.1041 7.93663C14.1041 6.05074 14.0962 5.81402 14.062 5.07358C14.0278 4.33424 13.9089 3.82913 13.7347 3.38797C13.5543 2.93135 13.3135 2.5443 12.9219 2.1578C12.5304 1.7713 12.137 1.53408 11.6743 1.3568C11.2258 1.18513 10.7135 1.06735 9.96388 1.03424C9.21256 1.00058 8.97236 0.992188 7.05876 0.992188C5.14516 0.992188 4.90479 1.00002 4.15307 1.03424Z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+                        </a>
+                        <a href="javascript:;" class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
+                            <svg class="w-[1rem] h-[1rem] text-white" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2.8794 11.5527V3.86835H0.318893V11.5527H2.87967H2.8794ZM1.59968 2.81936C2.4924 2.81936 3.04817 2.2293 3.04817 1.49188C3.03146 0.737661 2.4924 0.164062 1.61666 0.164062C0.74032 0.164062 0.167969 0.737661 0.167969 1.49181C0.167969 2.22923 0.723543 2.8193 1.5829 2.8193H1.59948L1.59968 2.81936ZM4.29668 11.5527H6.85698V7.26187C6.85698 7.03251 6.87369 6.80255 6.94134 6.63873C7.12635 6.17968 7.54764 5.70449 8.25514 5.70449C9.18141 5.70449 9.55217 6.4091 9.55217 7.44222V11.5527H12.1124V7.14672C12.1124 4.78652 10.8494 3.68819 9.16483 3.68819C7.78372 3.68819 7.17715 4.45822 6.84014 4.98267H6.85718V3.86862H4.29681C4.33023 4.5895 4.29661 11.553 4.29661 11.553L4.29668 11.5527Z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+                        </a>
+                        <a href="javascript:;" class="w-9 h-9 rounded-full bg-gray-800 flex justify-center items-center hover:bg-indigo-600">
+                            <svg class="w-[1.25rem] h-[0.875rem] text-white" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M13.9346 1.13529C14.5684 1.30645 15.0665 1.80588 15.2349 2.43896C15.5413 3.58788 15.5413 5.98654 15.5413 5.98654C15.5413 5.98654 15.5413 8.3852 15.2349 9.53412C15.0642 10.1695 14.5661 10.669 13.9346 10.8378C12.7886 11.1449 8.19058 11.1449 8.19058 11.1449C8.19058 11.1449 3.59491 11.1449 2.44657 10.8378C1.81277 10.6666 1.31461 10.1672 1.14622 9.53412C0.839844 8.3852 0.839844 5.98654 0.839844 5.98654C0.839844 5.98654 0.839844 3.58788 1.14622 2.43896C1.31695 1.80353 1.81511 1.30411 2.44657 1.13529C3.59491 0.828125 8.19058 0.828125 8.19058 0.828125C8.19058 0.828125 12.7886 0.828125 13.9346 1.13529ZM10.541 5.98654L6.72178 8.19762V3.77545L10.541 5.98654Z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!--Grid-->
+                <div class="py-7 border-t border-gray-700">
+                    <div class="flex items-center justify-center">
+                        <span class="text-gray-400">© <a href="#">Recipe Generator </a> 2025 All rights reserved.</span>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <span class="text-gray-200 mt-6">Developed by hassanelb</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script src="Scripts/scripts.js"></script>
+    </body>
 </html>
