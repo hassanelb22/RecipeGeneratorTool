@@ -33,7 +33,6 @@ function toggleApiKeyVisibility() {
 }
 
 // Function to copy a recipe
-
 function copyRecipe() {
     const recipeText = document.getElementById("generatedRecipe").innerText;
     navigator.clipboard
@@ -135,7 +134,7 @@ document.getElementById("recipeForm").addEventListener("submit", async function 
     const prompt = `
     Generate a detailed recipe for "${recipeName}" in ${language}. 
     Include the following sections:
-    - A catchy title with decorations.
+    - A catchy recipe name with emoji.
     - Ingredients list.
     - Step-by-step directions.
     - Nutritional information (prep time, cooking time, total time, servings, and approximate calories per serving).
@@ -209,15 +208,34 @@ function toggleMobileMenu() {
     mobileMenu.classList.toggle("hidden");
 }
 
+// Updated saveRecipe function to include prompts
 function saveRecipe() {
-    let recipeName = document.getElementById("recipeName").value;
-    let recipeContent = document.getElementById("generatedRecipe").innerHTML;
-    let language = document.getElementById("language").value;
+    const recipeName = document.getElementById("recipeName").value;
+    const recipeContent = document.getElementById("generatedRecipe").innerText;
+    const language = document.getElementById("language").value;
+
+    const ahmadBatPrompt = document.getElementById("ahmadBatPrompt").innerText;
+    const anouarSaidiPrompt = document.getElementById("anouarSaidiPrompt").innerText;
+    const ahmadJdayPromptV1 = document.getElementById("ahmadJdayPromptV1").innerText;
+    const ahmadJdayPromptV2 = document.getElementById("ahmadJdayPromptV2").innerText;
 
     if (!recipeName || !recipeContent.trim()) return;
 
+    const recipeData = {
+        name: recipeName,
+        content: recipeContent,
+        language: language,
+        prompts: {
+            ahmadBatPrompt: ahmadBatPrompt,
+            anouarSaidiPrompt: anouarSaidiPrompt,
+            ahmadJdayPromptV1: ahmadJdayPromptV1,
+            ahmadJdayPromptV2: ahmadJdayPromptV2,
+        },
+        timestamp: new Date().toISOString(),
+    };
+
     let savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
-    savedRecipes.push({ name: recipeName, content: recipeContent, language: language });
+    savedRecipes.push(recipeData);
     localStorage.setItem("recipes", JSON.stringify(savedRecipes));
 
     // Show the save alert
@@ -321,20 +339,30 @@ function renderRecipes() {
             accordionItem.classList.add("accordion-item");
 
             accordionItem.innerHTML = `
-      <div class="accordion-header" onclick="togglePanel(${index})">
-        <span class="accordion-title">${recipe.name}</span>
-        <button onclick="deleteRecipe(${index})" class="delete-icon">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-          </svg>
-        </button>
-      </div>
-      <div id="panel-${index}" class="accordion-panel">
-        <div class="recipe-content">
-          <p>${recipe.content}</p>
+        <div class="accordion-header" onclick="togglePanel(${index})">
+          <span class="accordion-title">${recipe.name}</span>
+          <button onclick="deleteRecipe(${index})" class="delete-icon">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </button>
         </div>
-      </div>
-    `;
+        <div id="panel-${index}" class="accordion-panel">
+          <div class="recipe-content">
+            <p>${recipe.content}</p>
+            ${
+                recipe.prompts
+                    ? `
+              <div class="prompts-section mt-4">
+                <h3 class="text-lg font-semibold">Prompts</h3>
+                <pre class="bg-gray-100 p-4 rounded">${JSON.stringify(recipe.prompts, null, 2)}</pre>
+              </div>
+            `
+                    : ""
+            }
+          </div>
+        </div>
+      `;
 
             recipeList.appendChild(accordionItem);
         }
@@ -357,11 +385,23 @@ function downloadCSV() {
         return;
     }
 
-    let csvContent = "recipe_name,generated_recipe,language\n";
-    savedRecipes.forEach(({ name, content, language }) => {
-        csvContent += `"${name}","${content.replace(/"/g, '""')}","${language}"\n`;
+    // Define CSV headers
+    let csvContent = "recipe_name,generated_recipe,language,ahmadBatPrompt,anouarSaidiPrompt,ahmadJdayPromptV1,ahmadJdayPromptV2\n";
+
+    // Add each recipe and its prompts to the CSV
+    savedRecipes.forEach(({ name, content, language, prompts }) => {
+        const ahmadBatPrompt = prompts?.ahmadBatPrompt || "";
+        const anouarSaidiPrompt = prompts?.anouarSaidiPrompt || "";
+        const ahmadJdayPromptV1 = prompts?.ahmadJdayPromptV1 || "";
+        const ahmadJdayPromptV2 = prompts?.ahmadJdayPromptV2 || "";
+
+        csvContent += `"${name}","${content.replace(/"/g, '""')}","${language}","${ahmadBatPrompt.replace(/"/g, '""')}","${anouarSaidiPrompt.replace(/"/g, '""')}","${ahmadJdayPromptV1.replace(/"/g, '""')}","${ahmadJdayPromptV2.replace(
+            /"/g,
+            '""'
+        )}"\n`;
     });
 
+    // Create and download the CSV file
     let blob = new Blob([csvContent], { type: "text/csv" });
     let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -378,11 +418,3 @@ window.addEventListener("scroll", () => {
         header.classList.remove("scrolled");
     }
 });
-
-// Index page script.js
-
-// Toggle Mobile Menu
-function toggleMobileMenu() {
-    const mobileMenu = document.getElementById("mobileMenu");
-    mobileMenu.classList.toggle("hidden");
-}
