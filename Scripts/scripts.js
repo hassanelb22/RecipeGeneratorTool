@@ -136,10 +136,10 @@ document.getElementById("recipeForm").addEventListener("submit", async function 
   const prompt = `
     Generate a detailed recipe for "${recipeName}" in ${language}. 
     Include the following sections:
-    - A catchy recipe name with emoji.
+    - recipe name with emoji.
     - Ingredients list.
-    - Step-by-step directions.
-    - Nutritional information (prep time, cooking time, total time, servings, and approximate calories per serving).
+    - Directions.
+    - Nutritional information (⏰ prep time, 🍳 cooking time, 🔥 total time, 🍽️ servings, and 💪 approximate calories per serving).
   `;
 
   try {
