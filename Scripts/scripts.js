@@ -449,7 +449,7 @@ function downloadCSV() {
   link.click();
 }
 
-// Function to download a CSV for Canva template
+// Function to download a CSV for Canva template// Function to download a CSV for Canva template
 function downloadCanvaCSV() {
   let savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
   if (savedRecipes.length === 0) {
@@ -463,7 +463,9 @@ function downloadCanvaCSV() {
   // Add each recipe's data to the CSV
   savedRecipes.forEach(({ name, content }) => {
     // Extract the first 3 ingredients from the recipe content
-    const ingredients = extractIngredients(content).slice(0, 3).join(", ");
+    const ingredients = extractIngredients(content)
+      .slice(0, 3)
+      .join("\n"); // Join ingredients with new lines without asterisks
 
     // Add the row to the CSV (leave the "Images" column empty)
     csvContent += `"${name}","${ingredients.replace(/"/g, '""')}",""\n`;
