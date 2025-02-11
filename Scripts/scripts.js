@@ -464,8 +464,15 @@ function downloadCanvaCSV() {
   savedRecipes.forEach(({ name, content }) => {
     // Extract the first 3 ingredients from the recipe content
     const ingredients = extractIngredients(content)
-      .slice(0, 3)
-      .join("\n"); // Join ingredients with new lines without asterisks
+      .slice(0, 3) // Take only the first 3 ingredients
+      .map((ingredient, index) => {
+        // Append "read more" to the third ingredient
+        if (index === 2) {
+          return `${ingredient}... `;
+        }
+        return ingredient;
+      })
+      .join("\n"); // Join ingredients with new lines
 
     // Add the row to the CSV (leave the "Images" column empty)
     csvContent += `"${name}","${ingredients.replace(/"/g, '""')}",""\n`;
